@@ -1,0 +1,36 @@
+{
+  "name": "shortstop-handlers",
+  "version": "0.0.0",
+  "description": "Common protocol handlers for use with the shortstop node module.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "tape test/*.js",
+    "cover": "istanbul cover tape -- test/*.js",
+    "lint": "jshint -c .jshintrc index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paypal/shortstop-handlers.git"
+  },
+  "keywords": [
+    "shortstop",
+    "node",
+    "json"
+  ],
+  "author": "Erik Toth <ertoth@paypal.com>",
+  "licenses": [
+    {
+      "type": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  ],
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "tape": "~2.4.2",
+    "istanbul": "~0.2.4",
+    "jshint": "~2.4.3"
+  }
+}
