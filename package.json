@@ -1,6 +1,6 @@
 {
   "name": "shortstop-handlers",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Common protocol handlers for use with the shortstop node module.",
   "main": "index.js",
   "directories": {
