@@ -2,7 +2,7 @@
 
 A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
 
-[![Build Status](https://travis-ci.org/paypal/shortstop-handlers.png?branch=master)](https://travis-ci.org/paypal/shortstop-handlers)
+[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.png?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)
 
 ```javascript
 var shortstop = require('shortstop'),
