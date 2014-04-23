@@ -148,17 +148,9 @@ test('shortstop-common', function (t) {
         actual = handler('SAMPLE|b');
         t.equal(actual, expected);
 
-        //Test case for ENV not set.
-        process.env.SAMPLE = null;
+        delete process.env.SAMPLE;
         expected = false;
         actual = handler('SAMPLE|b');
-
-        t.equal(actual, expected);
-
-        process.env.SAMPLE = undefined;
-        expected = false;
-        actual = handler('SAMPLE|b');
-
         t.equal(actual, expected);
 
         t.end();
