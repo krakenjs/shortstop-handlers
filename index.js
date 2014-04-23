@@ -79,7 +79,8 @@ function _env() {
             return parseInt(value, 10);
         },
         'b': function (value) {
-            return value !== '' && value !== 'false' && value !== '0';
+            return value !== '' && value !== 'false' && value !== '0' &&
+                 value !== null && value !== undefined && value !== 'null' && value !== 'undefined';
         }
     };
 

@@ -6,7 +6,7 @@ NOTE: As of v1.0 `shortstop-handlers` works best with `shortstop` >=1.0. This is
 due to the fact that as of shortstop v1.0 async handlers are now supported and
 have subsequently been added to this module.
 
-[![Build Status](https://travis-ci.org/paypal/shortstop-handlers.png?branch=master)](https://travis-ci.org/paypal/shortstop-handlers)
+[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.png?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)
 
 ```javascript
 var shortstop = require('shortstop'),
@@ -156,6 +156,7 @@ resolver.resolve(foo, function (err, data) {
     data.item2; // the result of calling myothermodule()
 });
 ```
+
 
 
 ### handlers.glob([basedir|options])
