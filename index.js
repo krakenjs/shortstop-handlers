@@ -19,6 +19,7 @@ var fs = require('fs');
 var path = require('path');
 var glob = require('glob');
 var caller = require('caller');
+var thing = require('core-util-is');
 
 
 function startsWith(haystack, needle) {
@@ -47,13 +48,17 @@ function _path(basedir) {
 /**
  * Creates the protocol handler for the `file:` protocol
  * @param basedir
+ * @param options
  * @returns {Function}
  */
-function _file(basedir) {
-    var pathHandler = _path(basedir);
-    return function fileHandler(file) {
-        file = pathHandler(file);
-        return fs.readFileSync(file);
+function _file(basedir, options) {
+    var pathHandler;
+
+    options = options || { encoding: null, flag: 'r' };
+    pathHandler = _path(basedir);
+
+    return function fileHandler(file, cb) {
+        fs.readFile(pathHandler(file), options, cb);
     };
 }
 
@@ -141,21 +146,13 @@ function _exec(basedir) {
 
         tuple = value.split('#');
         module = require(tuple[0]);
-        method = tuple[1];
+        method = tuple[1] ? module[tuple[1]] : module;
 
-        if (method) {
-            if (typeof module[method] === 'function') {
-                return module[method]();
-            }
-
-            throw new Error('Unable to locate invokable function: ' + value);
+        if (thing.isFunction(method)) {
+            return method();
         }
 
-        if (typeof module === 'function') {
-            return module();
-        }
-
-        throw new Error('Unable to locate invokable module: ' + value);
+        throw new Error('exec: unable to locate function in ' + value);
     };
 }
 
@@ -168,10 +165,9 @@ function _exec(basedir) {
 function _glob(options) {
     var resolvePath;
 
-    if (typeof options === 'string') {
+    if (thing.isString(options)) {
         options = { cwd: options };
     }
-
 
     options = options || {};
     options.cwd = options.cwd || path.dirname(caller());
