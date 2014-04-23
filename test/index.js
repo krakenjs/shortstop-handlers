@@ -11,7 +11,7 @@ test('shortstop-common', function (t) {
     t.test('path', function (t) {
         var handler, expected, actual;
 
-        // Default dirname (cwd)
+        // Default dirname
         handler = commons.path();
         t.equal(typeof handler, 'function');
         t.equal(handler.length, 1);
@@ -23,7 +23,7 @@ test('shortstop-common', function (t) {
 
         // Relative Path
         expected = __filename;
-        actual = handler(path.relative(process.cwd(), expected));
+        actual = handler(path.basename(__filename));
         t.equal(actual, expected);
 
 
@@ -257,6 +257,93 @@ test('shortstop-common', function (t) {
         });
 
         t.end();
+    });
+
+
+    t.test('glob', function (t) {
+
+        t.test('api', function (t) {
+            var handler;
+            handler = commons.glob();
+            t.equal(typeof handler, 'function');
+            t.equal(handler.length, 2);
+            t.end();
+        });
+
+        t.test('basedir', function (t) {
+            var basedir, handler, expected;
+
+            basedir = path.join(__dirname, 'fixtures');
+            handler = commons.glob(basedir);
+
+            // Test no basedir
+            expected = [
+                path.join(basedir, 'index.js')
+            ];
+
+            handler('**/*.js', function (err, actual) {
+                t.error(err);
+                t.equal(actual.length, expected.length);
+                t.equal(actual[0], expected[0]);
+                t.end();
+            });
+        });
+
+
+        t.test('options object', function (t) {
+            var basedir, handler, expected;
+
+            basedir = path.join(__dirname, 'fixtures');
+            handler = commons.glob({ cwd: basedir });
+
+            expected = [
+                path.join(basedir, 'index.js')
+            ];
+
+            handler('**/*.js', function (err, actual) {
+                t.error(err);
+                t.equal(actual.length, expected.length);
+                t.equal(actual[0], expected[0]);
+                t.end();
+            });
+        });
+
+
+        t.test('no options', function (t) {
+            var handler, expected;
+
+            handler = commons.glob();
+
+            // Test no basedir
+            expected = [
+                path.join(__dirname, 'fixtures', 'index.js'),
+                path.join(__dirname, 'index.js')
+            ];
+
+            handler('**/*.js', function (err, actual) {
+                t.error(err);
+                t.equal(actual.length, expected.length);
+                t.equal(actual[0], expected[0]);
+                t.equal(actual[1], expected[1]);
+                t.end();
+            });
+        });
+
+
+        t.test('no match', function (t) {
+            var basedir, handler, expected;
+
+            basedir = path.join(__dirname, 'fixtures');
+            handler = commons.glob();
+
+            // Test no basedir
+            handler('**/*.xls', function (err, actual) {
+                t.error(err);
+                t.equal(actual.length, 0);
+                t.end();
+            });
+        });
+
     });
 
 });

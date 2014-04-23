@@ -2,6 +2,10 @@
 
 A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
 
+NOTE: As of v1.0 `shortstop-handlers` works best with `shortstop` >=1.0. This is
+due to the fact that as of shortstop v1.0 async handlers are now supported and
+have subsequently been added to this module.
+
 [![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.png?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)
 
 ```javascript
@@ -9,7 +13,7 @@ var shortstop = require('shortstop'),
     handlers = require('shortstop-handlers');
 
 
-var resolver, json, data;
+var resolver, json;
 
 resolver = shortstop.create();
 resolver.use('path',   handlers.path(__dirname));
@@ -19,8 +23,9 @@ resolver.use('env',    handlers.env());
 resolver.use('require', handlers.require(__dirname));
 resolver.use('exec',   handlers.exec(__dirname));
 
-json = require('./myfile');
-data = resolver.resolve(json);
+resolver.resolve(require('./myfile'), function (err, data) {
+    // data
+});
 ```
 
 ## API
@@ -37,9 +42,9 @@ var foo = {
 
 var resolver = shortstop.create();
 resolver.use('path', handlers.path());
-
-foo = resolver.resolve(foo);
-foo.mydir; // `/path/to/my/project/lib/dir`
+resolver.resolve(foo, function (err, data) {
+  data.mydir; // `/path/to/my/project/lib/dir`
+});
 ```
 
 
@@ -57,9 +62,9 @@ var foo = {
 
 var resolver = shortstop.create();
 resolver.use('file', handlers.file());
-
-foo = resolver.resolve(foo);
-foo.cert; // <Buffer 48 65 6c 6c 6f 2c 20 77 6f72 6c 64 21>
+resolver.resolve(foo, function (err, data) {
+    foo.cert; // <Buffer 48 65 6c 6c 6f 2c 20 77 6f72 6c 64 21>
+});
 ```
 
 
@@ -74,10 +79,10 @@ var foo = {
 
 var resolver = shortstop.create();
 resolver.use('base64', handlers.base64());
-
-foo = resolver.resolve();
-foo.key; // <Buffer 48 65 6c 6c 6f 2c 20 77 6f72 6c 64 21>
-foo.key.toString('utf8'); // Hello, world!
+resolver.resolve(foo, function (err, data) {
+    data.key; // <Buffer 48 65 6c 6c 6f 2c 20 77 6f72 6c 64 21>
+    data.key.toString('utf8'); // Hello, world!
+});
 ```
 
 ### handlers.env()
@@ -87,7 +92,7 @@ Creates a handler which will resolve the provided value as an environment variab
 ```javascript
 process.env.HOST = 'localhost';
 process.env.PORT = '8000';
-process.env.ENABLED = 'true'; 
+process.env.ENABLED = 'true';
 process.env.FALSY = 'false'; // or '', or '0'
 
 var foo = {
@@ -99,12 +104,12 @@ var foo = {
 
 var resolver = shortstop.create();
 resolver.use('env', handlers.env());
-
-foo = resolver.resolve(foo);
-foo.bar; // 'localhost'
-foo.baz; // 8000
-foo.bam; // true
-foo.bag; // false
+resolver.resolve(foo, function (err, data) {
+    data.bar; // 'localhost'
+    data.baz; // 8000
+    data.bam; // true
+    data.bag; // false
+});
 ```
 
 
@@ -112,7 +117,7 @@ foo.bag; // false
 
 * `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `process.cwd()`.
 
-Creates a handler which resolves and loads, and returns the specified module. 
+Creates a handler which resolves and loads, and returns the specified module.
 
 ```javascript
 var foo = {
@@ -124,12 +129,12 @@ var foo = {
 
 var resolver = shortstop.create();
 resolver.use('require', handlers.require());
-
-foo = resolver.resolve(foo);
-foo.path; // Node core `path` module
-foo.minimist; // `minimist` module as loaded from node_modules
-foo.mymodule; // module as loaded from `./mymodule.js`
-foo.json; // JS object as loaded from `../config/myjson.json`
+resolver.resolve(foo, function (err, data) {
+    data.path; // Node core `path` module
+    data.minimist; // `minimist` module as loaded from node_modules
+    data.mymodule; // module as loaded from `./mymodule.js`
+    data.json; // JS object as loaded from `../config/myjson.json`
+});
 ```
 
 
@@ -137,7 +142,7 @@ foo.json; // JS object as loaded from `../config/myjson.json`
 
 * `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `process.cwd()`.
 
-Creates a handler which which resolves and loads the specified module, executing the method (if specified) or the module itself, using the return value as the resulting value. The value should have the format `{module}(#{method})?`. If no function is able to be found this handler will throw with an error.
+Creates a handler which resolves and loads the specified module, executing the method (if specified) or the module itself, using the return value as the resulting value. The value should have the format `{module}(#{method})?`. If no function is able to be found this handler will throw with an error.
 ```javascript
 var foo = {
     "item1": "exec:./mymodule#create"
@@ -146,9 +151,28 @@ var foo = {
 
 var resolver = shortstop.create();
 resolver.use('exec', handlers.exec(__dirname));
-
-foo = resolver.resolve(foo);
-foo.item1; // the result of calling mymodule.create()
-foo.item2; // the result of calling myothermodule()
+resolver.resolve(foo, function (err, data) {
+    data.item1; // the result of calling mymodule.create()
+    data.item2; // the result of calling myothermodule()
+});
 ```
 
+
+
+### handlers.glob([basedir|options])
+
+* `basedir` (*String* or *Object*, optional) - The base path use for resolving or a `glob` options object per https://github.com/isaacs/node-glob#options
+
+Creates a handler which match files using the patterns the shell uses.
+```javascript
+var foo = {
+    "files": "glob:**/*.js"
+};
+
+var resolver = shortstop.create();
+resolver.use('glob', handlers.exec(__dirname));
+resolver.resolve(foo, function (err, data) {
+    data[0] = '/my/dirname/foo/index.js';
+    data[1] = '/my/dirname/index.js';
+});
+```

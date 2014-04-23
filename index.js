@@ -15,8 +15,10 @@
  \*───────────────────────────────────────────────────────────────────────────*/
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
+var fs = require('fs');
+var path = require('path');
+var glob = require('glob');
+var caller = require('caller');
 
 
 function startsWith(haystack, needle) {
@@ -29,7 +31,7 @@ function startsWith(haystack, needle) {
  * @returns {Function}
  */
 function _path(basedir) {
-    basedir = basedir || process.cwd();
+    basedir = basedir || path.dirname(caller());
     return function pathHandler(file) {
         if (path.resolve(file) === file) {
             // Absolute path already, so just return it.
@@ -159,11 +161,41 @@ function _exec(basedir) {
 }
 
 
+/**
+ * Creates the protocol handler for the `glob:` protocol
+ * @param options https://github.com/isaacs/node-glob#options
+ * @returns {Function}
+ */
+function _glob(options) {
+    var resolvePath;
+
+    if (typeof options === 'string') {
+        options = { cwd: options };
+    }
+
+
+    options = options || {};
+    options.cwd = options.cwd || path.dirname(caller());
+
+    resolvePath = _path(options.cwd);
+    return function globHandler(value, cb) {
+        glob(value, options, function (err, data) {
+            if (err) {
+                cb(err);
+                return;
+            }
+            cb(null, data.map(resolvePath));
+        });
+    };
+}
+
+
 module.exports = {
     path:    _path,
     file:    _file,
     base64:  _base64,
     env:     _env,
     require: _require,
-    exec:    _exec
+    exec:    _exec,
+    glob:    _glob
 };
