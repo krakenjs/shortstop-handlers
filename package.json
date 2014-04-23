@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "glob": "^3.2.9",
-    "caller": "~0.0.1"
+    "caller": "~0.0.1",
+    "core-util-is": "^1.0.1"
   }
 }

@@ -48,41 +48,53 @@ test('shortstop-common', function (t) {
 
 
     t.test('file', function (t) {
-        var handler, expected, actual;
+        var handler, expected;
 
         // Default dirname
         handler = commons.file();
         t.equal(typeof handler, 'function');
-        t.equal(handler.length, 1);
-
-        // Absolute path
-        expected = fs.readFileSync(__filename);
-        actual = handler(__filename);
-        t.deepEqual(actual, expected);
-
-        // Relative path
-        expected = fs.readFileSync(__filename);
-        actual = handler(path.relative(process.cwd(), __filename));
-        t.deepEqual(actual, expected);
-
-
+        t.equal(handler.length, 2);
 
         // Specified dirname
         handler = commons.file(__dirname);
         t.equal(typeof handler, 'function');
-        t.equal(handler.length, 1);
+        t.equal(handler.length, 2);
+
 
         // Absolute path
         expected = fs.readFileSync(__filename);
-        actual = handler(__filename);
-        t.deepEqual(actual, expected);
+        handler(__filename, function (err, actual) {
+            t.error(err);
+            t.deepEqual(actual, expected);
 
-        // Relative path
-        expected = fs.readFileSync(__filename);
-        actual = handler(path.basename(__filename));
-        t.deepEqual(actual, expected);
+            // Relative path
+            handler(path.relative(__dirname, __filename), function (err, actual) {
+                t.error(err);
+                t.deepEqual(actual, expected);
 
-        t.end();
+                // Absolute path
+                handler(__filename, function (err, actual) {
+                    t.error(err);
+                    t.deepEqual(actual, expected);
+
+                    // Relative path
+                    handler(path.basename(__filename), function (err, actual) {
+                        t.error(err);
+                        t.deepEqual(actual, expected);
+
+                        // Custom file options
+                        handler = commons.file(__dirname, { encoding: 'utf8' });
+                        handler(__filename, function (err, actual) {
+                            t.error(err);
+                            t.deepEqual(actual, expected.toString('utf8'));
+                            t.end();
+                        });
+                    });
+                });
+
+            });
+
+        });
     });
 
 
