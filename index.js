@@ -54,8 +54,13 @@ function _path(basedir) {
 function _file(basedir, options) {
     var pathHandler;
 
-    options = options || { encoding: null, flag: 'r' };
+    if (thing.isObject(basedir)) {
+        options = basedir;
+        basedir = undefined;
+    }
+
     pathHandler = _path(basedir);
+    options = options || { encoding: null, flag: 'r' };
 
     return function fileHandler(file, cb) {
         fs.readFile(pathHandler(file), options, cb);
