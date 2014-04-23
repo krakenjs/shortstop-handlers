@@ -153,6 +153,8 @@ test('shortstop-common', function (t) {
         expected = false;
         actual = handler('SAMPLE|b');
 
+        t.equal(actual, expected);
+
         process.env.SAMPLE = undefined;
         expected = false;
         actual = handler('SAMPLE|b');
