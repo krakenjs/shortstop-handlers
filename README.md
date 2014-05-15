@@ -31,7 +31,7 @@ resolver.resolve(require('./myfile'), function (err, data) {
 ## API
 ### handlers.path([basedir])
 
-* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `process.cwd()`.
+* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `caller` dirname.
 
 Creates a handler that can be given to shortstop to resolve file paths.
 
@@ -49,9 +49,10 @@ resolver.resolve(foo, function (err, data) {
 
 
 
-### handlers.file([basedir])
+### handlers.file([basedir], [options])
 
-* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `process.cwd()`.
+* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `caller` dirname.
+* `options` (*Object*, optional) - Options object provided to fs.readFile.
 
 Creates a handler which resolves the provided value to the basedir and returns the contents of the file as a Buffer.
 
@@ -115,7 +116,7 @@ resolver.resolve(foo, function (err, data) {
 
 ### handlers.require([basedir])
 
-* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `process.cwd()`.
+* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `caller` dirname.
 
 Creates a handler which resolves and loads, and returns the specified module.
 
@@ -140,7 +141,7 @@ resolver.resolve(foo, function (err, data) {
 
 ### handlers.exec([basedir])
 
-* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `process.cwd()`.
+* `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `caller` dirname.
 
 Creates a handler which resolves and loads the specified module, executing the method (if specified) or the module itself, using the return value as the resulting value. The value should have the format `{module}(#{method})?`. If no function is able to be found this handler will throw with an error.
 ```javascript
@@ -170,7 +171,7 @@ var foo = {
 };
 
 var resolver = shortstop.create();
-resolver.use('glob', handlers.exec(__dirname));
+resolver.use('glob', handlers.glob(__dirname));
 resolver.resolve(foo, function (err, data) {
     data[0] = '/my/dirname/foo/index.js';
     data[1] = '/my/dirname/index.js';

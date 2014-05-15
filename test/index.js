@@ -87,7 +87,14 @@ test('shortstop-common', function (t) {
                         handler(__filename, function (err, actual) {
                             t.error(err);
                             t.deepEqual(actual, expected.toString('utf8'));
-                            t.end();
+
+                            // Default basedir and custom file options
+                            handler = commons.file({ encoding: 'utf8' });
+                            handler(__filename, function (err, actual) {
+                                t.error(err);
+                                t.deepEqual(actual, expected.toString('utf8'));
+                                t.end();
+                            });
                         });
                     });
                 });
