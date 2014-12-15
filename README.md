@@ -1,4 +1,9 @@
-# shortstop-handlers
+shortstop-handlers
+==================
+
+Lead Maintainer: [Jean-Charles Sisk](https://github.com/jasisk)  
+
+[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.svg?branch=v1.0.0-release)](https://travis-ci.org/krakenjs/shortstop-handlers)  
 
 A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
 
@@ -6,7 +11,6 @@ NOTE: As of v1.0 `shortstop-handlers` works best with `shortstop` >=1.0. This is
 due to the fact that as of shortstop v1.0 async handlers are now supported and
 have subsequently been added to this module.
 
-[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.png?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)
 
 ```javascript
 var shortstop = require('shortstop'),
