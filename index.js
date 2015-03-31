@@ -125,16 +125,19 @@ function _env() {
 function _require(basedir) {
     var resolvePath = _path(basedir);
     return function requireHandler(value) {
-        var module = value;
+        var tuple, module, property;
 
+        tuple = value.split('#');
+        module = tuple[0];
+        property = tuple[1];
         // @see http://nodejs.org/api/modules.html#modules_file_modules
-        if (startsWith(value, '/') || startsWith(value, './') || startsWith(value, '../')) {
+        if (startsWith(module, '/') || startsWith(module, './') || startsWith(module, '../')) {
             // NOTE: Technically, paths with a leading '/' don't need to be resolved, but
             // leaving for consistency.
             module = resolvePath(module);
         }
 
-        return require(module);
+        return property ? require(module)[property] : require(module);
     };
 }
 

@@ -122,14 +122,15 @@ resolver.resolve(foo, function (err, data) {
 
 * `basedir` (*String*, optional) - The base path used for resolving relative path values. Defaults to `caller` dirname.
 
-Creates a handler which resolves and loads, and returns the specified module.
+Creates a handler which resolves and loads, and returns the property (if specified) or the module itself. The value should have the format `{module}(#property)?`.
 
 ```javascript
 var foo = {
     "path": "require:path",
     "minimist": "require:minimist",
     "mymodule": "require:./mymodule"
-    "json": "require:../config/myjson"
+    "json": "require:../config/myjson",
+    "myproperty": "require:./mymodule#myproperty"
 };
 
 var resolver = shortstop.create();
@@ -139,6 +140,7 @@ resolver.resolve(foo, function (err, data) {
     data.minimist; // `minimist` module as loaded from node_modules
     data.mymodule; // module as loaded from `./mymodule.js`
     data.json; // JS object as loaded from `../config/myjson.json`
+    data.myproperty; // value of myproperty got from `./mymodule.js`
 });
 ```
 
