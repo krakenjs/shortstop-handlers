@@ -34,8 +34,8 @@
     "jshint": "^2.5.0"
   },
   "dependencies": {
-    "glob": "^3.2.9",
     "caller": "~0.0.1",
-    "core-util-is": "^1.0.1"
+    "core-util-is": "^1.0.1",
+    "glob": "^7.0.5"
   }
 }
