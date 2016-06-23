@@ -29,13 +29,13 @@
   ],
   "readmeFilename": "README.md",
   "devDependencies": {
-    "tape": "^2.12.3",
-    "istanbul": "^0.2.7",
-    "jshint": "^2.5.0"
+    "istanbul": "^0.4.4",
+    "jshint": "^2.5.0",
+    "tape": "^4.6.0"
   },
   "dependencies": {
-    "glob": "^3.2.9",
-    "caller": "~0.0.1",
-    "core-util-is": "^1.0.1"
+    "caller": "^1.0.1",
+    "core-util-is": "^1.0.1",
+    "glob": "^7.0.5"
   }
 }
