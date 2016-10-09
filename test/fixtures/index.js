@@ -9,4 +9,6 @@ myModule.myFunction = function myFunction() {
     return 'myFunction';
 };
 
+myModule.myProperty = 'myProperty';
+
 module.exports = myModule;

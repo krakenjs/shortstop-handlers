@@ -223,6 +223,15 @@ test('shortstop-common', function (t) {
         actual = handler(path.resolve(__dirname, '../package'));
         t.deepEqual(actual, expected);
 
+        // Module function
+        expected = 'myFunction';
+        actual = handler('./fixtures/index#myFunction')();
+        t.deepEqual(actual, expected);
+
+        // Module property
+        expected = require('./fixtures/index').myProperty;
+        actual = handler('./fixtures/index#myProperty');
+        t.deepEqual(actual, expected);
 
         t.end();
     });
