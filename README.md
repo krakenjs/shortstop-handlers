@@ -1,9 +1,6 @@
-shortstop-handlers
-==================
+# shortstop-handlers
 
-Lead Maintainer: [Jean-Charles Sisk](https://github.com/jasisk)  
-
-[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.svg?branch=v1.0.0-release)](https://travis-ci.org/krakenjs/shortstop-handlers)  
+[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.svg?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)  
 
 A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
 
