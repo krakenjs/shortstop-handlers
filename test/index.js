@@ -172,6 +172,32 @@ test('shortstop-common', function (t) {
         actual = handler('SAMPLE|b');
         t.equal(actual, expected);
 
+        // Boolean (inverse)
+        process.env.SAMPLE = '8000';
+        expected = false;
+        actual = handler('SAMPLE|!b');
+        t.equal(actual, expected);
+
+        process.env.SAMPLE = 'true';
+        expected = false;
+        actual = handler('SAMPLE|!b');
+        t.equal(actual, expected);
+
+        process.env.SAMPLE = 'false';
+        expected = true;
+        actual = handler('SAMPLE|!b');
+        t.equal(actual, expected);
+
+        process.env.SAMPLE = '0';
+        expected = true;
+        actual = handler('SAMPLE|!b');
+        t.equal(actual, expected);
+
+        delete process.env.SAMPLE;
+        expected = true;
+        actual = handler('SAMPLE|!b');
+        t.equal(actual, expected);
+
         t.end();
     });
 

@@ -90,6 +90,9 @@ function _env() {
         },
         'b': function (value) {
             return value !== '' && value !== 'false' && value !== '0' && value !== undefined;
+        },
+        '!b': function (value) {
+            return value === '' || value === 'false' || value === '0' || value === undefined;
         }
     };
 

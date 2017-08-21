@@ -1,6 +1,6 @@
 # shortstop-handlers
 
-[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.svg?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)  
+[![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.svg?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)
 
 A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
 
@@ -89,7 +89,7 @@ resolver.resolve(foo, function (err, data) {
 
 ### handlers.env()
 
-Creates a handler which will resolve the provided value as an environment variable, optionally casting the value using the provided filter. Supported filters are '|d' and '|b', which will cast to Number and Boolean types respectively.
+Creates a handler which will resolve the provided value as an environment variable, optionally casting the value using the provided filter. Supported filters are '|d', '|b', and '|!b' which will cast to Number and Boolean types respectively.
 
 ```javascript
 process.env.HOST = 'localhost';
@@ -102,6 +102,7 @@ var foo = {
     "baz": "env:PORT|d",
     "bam": "env:ENABLED|b",
     "bag": "env:FALSY|b"
+    "bat": "env:FALSY|!b"
 };
 
 var resolver = shortstop.create();
@@ -111,6 +112,7 @@ resolver.resolve(foo, function (err, data) {
     data.baz; // 8000
     data.bam; // true
     data.bag; // false
+    data.bat; // true
 });
 ```
 
