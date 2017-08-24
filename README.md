@@ -176,7 +176,7 @@ var foo = {
 var resolver = shortstop.create();
 resolver.use('glob', handlers.glob(__dirname));
 resolver.resolve(foo, function (err, data) {
-    data[0] = '/my/dirname/foo/index.js';
-    data[1] = '/my/dirname/index.js';
+    data.files[0]; // '/my/dirname/foo/index.js';
+    data.files[1]; // '/my/dirname/index.js';
 });
 ```
