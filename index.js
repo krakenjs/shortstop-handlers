@@ -13,13 +13,12 @@
  │  See the License for the specific language governing permissions and       │
  │  limitations under the License.                                            │
  \*───────────────────────────────────────────────────────────────────────────*/
-'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var glob = require('glob');
-var caller = require('caller');
-var thing = require('core-util-is');
+const fs = require('fs');
+const path = require('path');
+const thing = require('util');
+const glob = require('glob');
+const caller = require('caller');
 
 
 function startsWith(haystack, needle) {
@@ -52,14 +51,12 @@ function _path(basedir) {
  * @returns {Function}
  */
 function _file(basedir, options) {
-    var pathHandler;
-
     if (thing.isObject(basedir)) {
         options = basedir;
         basedir = undefined;
     }
 
-    pathHandler = _path(basedir);
+    const pathHandler = _path(basedir);
     options = options || { encoding: null, flag: 'r' };
 
     return function fileHandler(file, cb) {
@@ -84,7 +81,7 @@ function _base64() {
  * @returns {Function}
  */
 function _env() {
-    var filters = {
+    const filters = {
         'd': function (value) {
             return parseInt(value, 10);
         },
@@ -97,14 +94,12 @@ function _env() {
     };
 
     return function envHandler(value) {
-        var result;
+        let result;
 
         Object.keys(filters).some(function (key) {
-            var fn, pattern, loc;
-
-            fn = filters[key];
-            pattern = '|' + key;
-            loc = value.indexOf(pattern);
+            const fn = filters[key];
+            const pattern = '|' + key;
+            const loc = value.indexOf(pattern);
 
             if (loc > -1 && loc === value.length - pattern.length) {
                 value = value.slice(0, -pattern.length);
@@ -126,18 +121,18 @@ function _env() {
  * @returns {Function}
  */
 function _require(basedir) {
-    var resolvePath = _path(basedir);
+    const resolvePath = _path(basedir);
     return function requireHandler(value) {
-        var module = value;
+        let _module = value;
 
         // @see http://nodejs.org/api/modules.html#modules_file_modules
         if (startsWith(value, '/') || startsWith(value, './') || startsWith(value, '../')) {
             // NOTE: Technically, paths with a leading '/' don't need to be resolved, but
             // leaving for consistency.
-            module = resolvePath(module);
+            _module = resolvePath(_module);
         }
 
-        return require(module);
+        return require(_module);
     };
 }
 
@@ -148,13 +143,11 @@ function _require(basedir) {
  * @returns {Function}
  */
 function _exec(basedir) {
-    var require = _require(basedir);
+    const require = _require(basedir);
     return function execHandler(value) {
-        var tuple, module, method;
-
-        tuple = value.split('#');
-        module = require(tuple[0]);
-        method = tuple[1] ? module[tuple[1]] : module;
+        const tuple = value.split('#');
+        const _module = require(tuple[0]);
+        const method = tuple[1] ? _module[tuple[1]] : _module;
 
         if (thing.isFunction(method)) {
             return method();
@@ -171,8 +164,6 @@ function _exec(basedir) {
  * @returns {Function}
  */
 function _glob(options) {
-    var resolvePath;
-
     if (thing.isString(options)) {
         options = { cwd: options };
     }
@@ -180,7 +171,7 @@ function _glob(options) {
     options = options || {};
     options.cwd = options.cwd || path.dirname(caller());
 
-    resolvePath = _path(options.cwd);
+    const resolvePath = _path(options.cwd);
     return function globHandler(value, cb) {
         glob(value, options, function (err, data) {
             if (err) {
