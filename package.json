@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "tape test/*.js",
-    "cover": "istanbul cover tape -- test/*.js",
+    "cover": "nyc tape test/*.js",
     "lint": "eslint index.js",
     "publish-coverage": "nyc report --reporter=lcov > coverage.lcov && codecov"
   },
@@ -22,20 +22,16 @@
     "json"
   ],
   "author": "Erik Toth <ertoth@paypal.com>",
-  "licenses": [
-    {
-      "type": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    }
-  ],
+  "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "codecov": "^3.3.0",
     "eslint": "^5.16.0",
     "nyc": "^13.3.0",
-    "tape": "^4.6.0"
+    "tape": "^4.10.1"
   },
   "dependencies": {
     "caller": "^1.0.1",
-    "glob": "^7.0.5"
+    "glob": "^7.1.3"
   }
 }
