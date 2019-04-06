@@ -6,5 +6,12 @@ node_js:
   - "6"
   - "8"
 script:
-  - "npm run cover"
-  - "npm run lint"
+  - npm run lint
+  - npm run cover
+
+after_script:
+  - npm run publish-coverage
+
+cache:
+  directories:
+      - node_modules

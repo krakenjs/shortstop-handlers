@@ -1,0 +1,11 @@
+{
+  "reporter": [
+    "lcov",
+    "text-summary",
+    "html"
+  ],
+  "include": [
+    "index.js"
+  ],
+  "all": true
+}
