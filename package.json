@@ -9,7 +9,7 @@
   "scripts": {
     "test": "tape test/*.js",
     "cover": "istanbul cover tape -- test/*.js",
-    "lint": "jshint -c .jshintrc index.js"
+    "lint": "eslint index.js"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,8 @@
   ],
   "readmeFilename": "README.md",
   "devDependencies": {
+    "eslint": "^5.16.0",
     "istanbul": "^0.4.4",
-    "jshint": "^2.5.0",
     "tape": "^4.6.0"
   },
   "dependencies": {
