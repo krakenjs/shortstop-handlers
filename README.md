@@ -1,22 +1,21 @@
 # shortstop-handlers
 
+[![Npm version](https://img.shields.io/npm/v/shortstop-handlers.svg)](https://www.npmjs.com/package/shortstop-handlers)
 [![Build Status](https://travis-ci.org/krakenjs/shortstop-handlers.svg?branch=master)](https://travis-ci.org/krakenjs/shortstop-handlers)
+[![codecov](https://codecov.io/gh/krakenjs/shortstop-handlers/branch/master/graph/badge.svg)](https://codecov.io/gh/krakenjs/shortstop-handlers)
 
-A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
+> A common set of handlers for use with [shortstop](https://github.com/paypal/shortstop).
 
-NOTE: As of v1.0 `shortstop-handlers` works best with `shortstop` >=1.0. This is
+**NOTE:** As of v1.0 `shortstop-handlers` works best with `shortstop` >=1.0. This is
 due to the fact that as of shortstop v1.0 async handlers are now supported and
 have subsequently been added to this module.
 
 
 ```javascript
-var shortstop = require('shortstop'),
-    handlers = require('shortstop-handlers');
+const shortstop = require('shortstop');
+const handlers = require('shortstop-handlers');
 
-
-var resolver, json;
-
-resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('path',   handlers.path(__dirname));
 resolver.use('file',   handlers.file(__dirname));
 resolver.use('base64', handlers.base64());
@@ -37,11 +36,11 @@ resolver.resolve(require('./myfile'), function (err, data) {
 Creates a handler that can be given to shortstop to resolve file paths.
 
 ```javascript
-var foo = {
+const foo = {
     "mydir": "path:./lib/dir"
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('path', handlers.path());
 resolver.resolve(foo, function (err, data) {
   data.mydir; // `/path/to/my/project/lib/dir`
@@ -58,11 +57,11 @@ resolver.resolve(foo, function (err, data) {
 Creates a handler which resolves the provided value to the basedir and returns the contents of the file as a Buffer.
 
 ```javascript
-var foo = {
+const foo = {
     "cert": "file:./cert.pem"
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('file', handlers.file());
 resolver.resolve(foo, function (err, data) {
     foo.cert; // <Buffer 48 65 6c 6c 6f 2c 20 77 6f72 6c 64 21>
@@ -75,11 +74,11 @@ resolver.resolve(foo, function (err, data) {
 Creates a handler which will return a buffer containing the content of the base64-encoded string.
 
 ```javascript
-var foo = {
+const foo = {
     "key": "base64:SGVsbG8sIHdvcmxkIQ=="
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('base64', handlers.base64());
 resolver.resolve(foo, function (err, data) {
     data.key; // <Buffer 48 65 6c 6c 6f 2c 20 77 6f72 6c 64 21>
@@ -97,7 +96,7 @@ process.env.PORT = '8000';
 process.env.ENABLED = 'true';
 process.env.FALSY = 'false'; // or '', or '0'
 
-var foo = {
+const foo = {
     "bar": "env:HOST",
     "baz": "env:PORT|d",
     "bam": "env:ENABLED|b",
@@ -105,7 +104,7 @@ var foo = {
     "bat": "env:FALSY|!b"
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('env', handlers.env());
 resolver.resolve(foo, function (err, data) {
     data.bar; // 'localhost'
@@ -124,14 +123,14 @@ resolver.resolve(foo, function (err, data) {
 Creates a handler which resolves and loads, and returns the specified module.
 
 ```javascript
-var foo = {
+const foo = {
     "path": "require:path",
     "minimist": "require:minimist",
     "mymodule": "require:./mymodule"
     "json": "require:../config/myjson"
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('require', handlers.require());
 resolver.resolve(foo, function (err, data) {
     data.path; // Node core `path` module
@@ -148,12 +147,12 @@ resolver.resolve(foo, function (err, data) {
 
 Creates a handler which resolves and loads the specified module, executing the method (if specified) or the module itself, using the return value as the resulting value. The value should have the format `{module}(#{method})?`. If no function is able to be found this handler will throw with an error.
 ```javascript
-var foo = {
+const foo = {
     "item1": "exec:./mymodule#create"
     "item2": "exec:./myothermodule"
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('exec', handlers.exec(__dirname));
 resolver.resolve(foo, function (err, data) {
     data.item1; // the result of calling mymodule.create()
@@ -169,11 +168,11 @@ resolver.resolve(foo, function (err, data) {
 
 Creates a handler which match files using the patterns the shell uses.
 ```javascript
-var foo = {
+const foo = {
     "files": "glob:**/*.js"
 };
 
-var resolver = shortstop.create();
+const resolver = shortstop.create();
 resolver.use('glob', handlers.glob(__dirname));
 resolver.resolve(foo, function (err, data) {
     data.files[0]; // '/my/dirname/foo/index.js';
