@@ -1,10 +1,24 @@
 'use strict';
 
 var fs = require('fs'),
+    util = require('util'),
+    cp = require('child_process'),
     test = require('tape'),
     path = require('path'),
     commons = require('../');
 
+var reloadCommons = (function reloadCommonsWrapper() {
+    var cwd = process.cwd();
+
+    function reloadCommons(dir) {
+        delete require.cache[require.resolve('../')];
+        process.chdir(dir);
+        commons = require('../');
+        return reloadCommons.bind(this, cwd);
+    }
+
+    return reloadCommons;
+})();
 
 test('shortstop-common', function (t) {
 
@@ -253,6 +267,31 @@ test('shortstop-common', function (t) {
         t.end();
     });
 
+    t.test('require in app', function (t) {
+        var handler;
+        var appdir = path.resolve(__dirname, 'fixtures', 'app');
+        
+        cp.execSync('npm install --no-package-lock', { cwd: appdir });
+
+        var restoreCommons = reloadCommons(appdir);
+
+        handler = commons.require(appdir);
+        t.equal(typeof handler, 'function');
+        t.equal(handler.length, 1);
+
+        let err;
+        try {
+            var fn = handler('testpkg1');
+            t.equal(fn(), 'testpkg1');
+        } catch(ex) {
+            err = ex;
+        }
+        t.notOk(err, 'should not throw - ' + (err && err.message || ''));
+
+        restoreCommons();
+
+        t.end();
+    });
 
     t.test('exec', function (t) {
         var handler, expected, actual;
@@ -310,7 +349,7 @@ test('shortstop-common', function (t) {
         t.test('basedir', function (t) {
             var basedir, handler, expected;
 
-            basedir = path.join(__dirname, 'fixtures');
+            basedir = path.join(__dirname, 'fixtures', 'pkg');
             handler = commons.glob(basedir);
 
             // Test no basedir
@@ -330,7 +369,7 @@ test('shortstop-common', function (t) {
         t.test('options object', function (t) {
             var basedir, handler, expected;
 
-            basedir = path.join(__dirname, 'fixtures');
+            basedir = path.join(__dirname, 'fixtures', 'pkg');
             handler = commons.glob({ cwd: basedir });
 
             expected = [
@@ -353,15 +392,17 @@ test('shortstop-common', function (t) {
 
             // Test no basedir
             expected = [
+                path.join(__dirname, 'fixtures', 'pkg', 'index.js'),
                 path.join(__dirname, 'fixtures', 'index.js'),
                 path.join(__dirname, 'index.js')
             ];
 
             handler('**/*.js', function (err, actual) {
                 t.error(err);
-                t.equal(actual.length, expected.length);
-                t.equal(actual[0], expected[0]);
-                t.equal(actual[1], expected[1]);
+                t.ok(actual.length >= expected.length, util.format('should resolve to atleast %d files', expected.length));
+                for ( var exp of expected ) {
+                  t.ok(actual.includes(exp), util.format('actual should contain %s file', exp));
+                }
                 t.end();
             });
         });

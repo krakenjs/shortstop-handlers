@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "tape test/*.js",
-    "cover": "istanbul cover tape -- test/*.js",
+    "cover": "nyc --reporter=lcov npm test && nyc report",
     "lint": "jshint -c .jshintrc index.js"
   },
   "repository": {
@@ -29,9 +29,9 @@
   ],
   "readmeFilename": "README.md",
   "devDependencies": {
-    "istanbul": "^0.4.4",
     "jshint": "^2.5.0",
-    "tape": "^4.6.0"
+    "nyc": "^15.1.0",
+    "tape": "^5.5.0"
   },
   "dependencies": {
     "caller": "^1.0.1",

@@ -21,6 +21,17 @@ var glob = require('glob');
 var caller = require('caller');
 var thing = require('core-util-is');
 
+(function expandModulePaths() {
+    // If this module is deployed outside the app's node_modules, it wouldn't be
+    // able to resolve other modules deployed under app while evaluating this shortstops.
+    // Adding app's node_modules folder to the paths will help handle this case.
+    var paths = module.paths;
+    var appNodeModules = path.resolve(process.cwd(), 'node_modules');
+    if (paths.indexOf(appNodeModules) < 0) {
+        // Assuming Module._nodeModulePaths creates a new module.paths object for each module.
+        paths.push(appNodeModules);
+    }
+})();
 
 function startsWith(haystack, needle) {
     return haystack.indexOf(needle) === 0;

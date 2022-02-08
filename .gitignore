@@ -13,13 +13,16 @@ pids
 logs
 results
 coverage
+.nyc_output
 lib-cov
 html-report
 xunit.xml
 node_modules
 npm-debug.log
+package-lock.json
 
 .project
+.vscode
 .idea
 .settings
 .iml
